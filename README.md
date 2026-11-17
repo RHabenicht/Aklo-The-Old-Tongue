@@ -1,12 +1,12 @@
-# R’lyehian Lexical Reference
+# Aklo-The-Old-Tongue Lexical Reference
 
-An open-source Python command-line tool for exploring English-to-R’lyehian vocabulary from the public [JLDevOps/Rlyehian](https://github.com/JLDevOps/Rlyehian) fan lexicon.
+An open-source Python command-line tool for exploring English-to-Aklo vocabulary from the public [JLDevOps/Rlyehian](https://github.com/JLDevOps/Rlyehian) fan lexicon.
 
 **Current scope:** A sourced vocabulary lookup and provisional lexical glossing tool—not a complete language, verified grammar, pronunciation guide, or fluent translator.
 
 ## Main features
 
-- **English-to-R’lyehian word lookup:** Find recorded source forms for individual English terms.
+- **English-to-Aklo word lookup:** Find recorded source forms for individual English terms.
 - **Provisional text glossing:** Replace recognized words and expressions with their listed equivalents without inventing missing vocabulary.
 - **Multiword phrase recognition:** Match entries such as `cross over` before processing individual words.
 - **Ambiguity detection:** Display unresolved markers and alternatives when an English term has multiple source forms, rather than silently choosing one.
