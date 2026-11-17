@@ -1,4 +1,4 @@
-# Aklo-The-Old-Tongue Lexical Reference
+# Aklo — The Old Tongue
 
 An open-source Python command-line tool for exploring English-to-Aklo vocabulary from the public [JLDevOps/Rlyehian](https://github.com/JLDevOps/Rlyehian) fan lexicon.
 
@@ -25,16 +25,16 @@ An open-source Python command-line tool for exploring English-to-Aklo vocabulary
 Clone the repository and run these commands from its root directory:
 
 ```sh
-python -m rlyehian_reference lookup "call"
-python -m rlyehian_reference translate "cross over, soul!"
-python -m rlyehian_reference sources
+python -m aklo_reference lookup "call"
+python -m aklo_reference translate "cross over, soul!"
+python -m aklo_reference sources
 ```
 
 ### Commands
 
 | Command | What it does |
 | --- | --- |
-| `lookup "word"` | Returns every recorded R’lyehian form for an English entry, as JSON. |
+| `lookup "word"` | Returns every recorded Aklo form for an English entry, as JSON. |
 | `translate "text"` | Produces a provisional gloss and reports ambiguous or unknown terms, as JSON. |
 | `sources` | Displays the source repository, pinned revision, and license metadata. |
 
@@ -43,7 +43,7 @@ The `translate` command is named for discoverability; its output is **not** a co
 ### Examples
 
 ```sh
-python -m rlyehian_reference lookup "soul"
+python -m aklo_reference lookup "soul"
 ```
 
 ```json
@@ -54,7 +54,7 @@ python -m rlyehian_reference lookup "soul"
 ```
 
 ```sh
-python -m rlyehian_reference translate "cross over, soul!"
+python -m aklo_reference translate "cross over, soul!"
 ```
 
 The provisional gloss contains:
@@ -67,7 +67,7 @@ For an ambiguous lookup such as `call`, the reference data records both `'ai` an
 
 ## Vocabulary and research method
 
-The bundled [lexicon](rlyehian_reference/data/lexicon.json) contains **92 English entries** extracted from the public upstream CSV at [revision `482bd14`](https://github.com/JLDevOps/Rlyehian/commit/482bd14e19d6a25094af800e6e2a65836484d319).
+The bundled [lexicon](aklo_reference/data/lexicon.json) contains **92 English entries** extracted from the public upstream CSV at [revision `482bd14`](https://github.com/JLDevOps/Rlyehian/commit/482bd14e19d6a25094af800e6e2a65836484d319).
 
 Only records labeled as standalone `word` entries are imported. One source entry was omitted from this derivative dataset. Distinct source spellings for the same English term are preserved as alternatives. The upstream material is a **fan-maintained glossary**, not an authoritative Lovecraftian dictionary.
 

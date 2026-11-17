@@ -1,5 +1,5 @@
 import unittest
-from rlyehian_reference.__main__ import analyze, lookup, data
+from aklo_reference.__main__ import analyze, lookup, data
 
 class LexiconTests(unittest.TestCase):
     def test_source_soul(self):

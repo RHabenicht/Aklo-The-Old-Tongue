@@ -1,4 +1,4 @@
-"""Provisional word lookup from a public R'lyehian fan lexicon."""
+"""Provisional Aklo word lookup from a public fan lexicon."""
 import argparse
 import json
 import re
@@ -10,7 +10,7 @@ TOKENS = re.compile(r"[^\W\d_]+(?:[\u0300-\u036f]+)?(?:[\u2019'-][^\W\d_]+(?:[\u
 
 @lru_cache(maxsize=1)
 def data():
-    with files("rlyehian_reference").joinpath("data/lexicon.json").open(encoding="utf-8") as f:
+    with files("aklo_reference").joinpath("data/lexicon.json").open(encoding="utf-8") as f:
         return json.load(f)
 
 def normalize(term):
@@ -48,7 +48,7 @@ def analyze(text):
     return {'gloss': ''.join(out), 'issues': issues}
 
 def main(argv=None):
-    p=argparse.ArgumentParser(description="R'lyehian public-source lexical lookup")
+    p=argparse.ArgumentParser(description="Aklo — The Old Tongue: public-source lexical lookup")
     sub=p.add_subparsers(dest='command',required=True)
     sub.add_parser('lookup').add_argument('term')
     sub.add_parser('translate').add_argument('text')
