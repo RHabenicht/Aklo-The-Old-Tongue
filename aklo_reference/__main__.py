@@ -5,6 +5,7 @@ import re
 import unicodedata
 from functools import lru_cache
 from importlib.resources import files
+from . import research
 
 TOKENS = re.compile(r"[^\W\d_]+(?:[\u0300-\u036f]+)?(?:[\u2019'-][^\W\d_]+(?:[\u0300-\u036f]+)?)*|\s+|.", re.UNICODE)
 
@@ -19,10 +20,11 @@ def normalize(term):
 def lookup(term):
     return data()["entries"].get(normalize(term), [])
 
-def analyze(text):
+def analyze(text, terms=None):
     """Preserve punctuation; flag ambiguous/unmapped tokens without inventing words."""
     tokens = TOKENS.findall(text)
-    terms = data()["entries"]
+    if terms is None:
+        terms = data()["entries"]
     out, issues = [], []
     i = 0
     while i < len(tokens):
@@ -48,17 +50,47 @@ def analyze(text):
     return {'gloss': ''.join(out), 'issues': issues}
 
 def main(argv=None):
-    p=argparse.ArgumentParser(description="Aklo — The Old Tongue: public-source lexical lookup")
-    sub=p.add_subparsers(dest='command',required=True)
-    sub.add_parser('lookup').add_argument('term')
-    sub.add_parser('translate').add_argument('text')
-    sub.add_parser('sources')
-    args=p.parse_args(argv)
-    if args.command=='lookup': print(json.dumps({'term':args.term,'forms':lookup(args.term)},ensure_ascii=False,indent=2))
-    elif args.command=='translate':
-        print('PROVISIONAL LEXICAL GLOSS (not a completed translation)')
-        print(json.dumps(analyze(args.text),ensure_ascii=False,indent=2))
-    else: print(json.dumps(data()['source'],indent=2,ensure_ascii=False))
+    p = argparse.ArgumentParser(description="Aklo — The Old Tongue: source-labelled lexical research")
+    p.add_argument("--cache-dir", help="Override the local research cache")
+    sub = p.add_subparsers(dest="command", required=True)
+    lookup_cmd = sub.add_parser("lookup")
+    lookup_cmd.add_argument("term")
+    lookup_cmd.add_argument("--expanded", action="store_true")
+    gloss_cmd = sub.add_parser("translate")
+    gloss_cmd.add_argument("text")
+    gloss_cmd.add_argument("--expanded", action="store_true")
+    for name in ("research", "reverse"):
+        q = sub.add_parser(name)
+        q.add_argument("term")
+        q.add_argument("--core-only", action="store_true")
+        q.add_argument("--include-generated", action="store_true")
+    sync_cmd = sub.add_parser("sync")
+    sync_cmd.add_argument("source", choices=["all", *research.SOURCES], nargs="?", default="all")
+    sub.add_parser("sources")
+    args = p.parse_args(argv)
+    core = data()["entries"]
+    if args.command == "lookup":
+        if args.expanded:
+            result = research.search(core, args.term, expanded=True, path=args.cache_dir)
+        else:
+            result = {"term": args.term, "forms": lookup(args.term)}
+    elif args.command == "translate":
+        print("PROVISIONAL LEXICAL GLOSS (not a completed translation)")
+        result = analyze(args.text, research.translation_entries(core, args.expanded, args.cache_dir))
+    elif args.command in ("research", "reverse"):
+        result = research.search(core, args.term, reverse=args.command == "reverse",
+                                 expanded=not args.core_only,
+                                 include_generated=args.include_generated, path=args.cache_dir)
+    elif args.command == "sync":
+        chosen = None if args.source == "all" else [args.source]
+        result = research.sync(args.cache_dir, chosen)
+    else:
+        result = {"core": data()["source"], "external": research.status(args.cache_dir),
+                  "rc1_spec": research.RC1_SPEC}
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    if args.command == "sync" and any(v["status"] == "error" for v in result.values()):
+        return 1
+    return 0
 
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    raise SystemExit(main())

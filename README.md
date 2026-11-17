@@ -1,6 +1,6 @@
 # Aklo — The Old Tongue
 
-An open-source Python command-line tool for exploring English-to-Aklo vocabulary from the public [JLDevOps/Rlyehian](https://github.com/JLDevOps/Rlyehian) fan lexicon.
+An open-source Python command-line tool for exploring English-to-Aklo vocabulary, starting with the public [JLDevOps/Rlyehian](https://github.com/JLDevOps/Rlyehian) fan lexicon.
 
 **Current scope:** A sourced vocabulary lookup and provisional lexical glossing tool—not a complete language, verified grammar, pronunciation guide, or fluent translator.
 
@@ -88,3 +88,34 @@ The included GitHub Actions workflow runs the test suite on pushes and pull requ
 - **Upstream license:** MIT; preserved in [`third_party/JLDevOps-LICENSE.txt`](third_party/JLDevOps-LICENSE.txt)
 
 The code in this repository is licensed under the root [MIT license](LICENSE). The upstream vocabulary is separately provided under its original MIT license; retain the original notice when redistributing it.
+
+
+## Expanded research and reverse lookup
+
+The original 92-entry core remains unchanged. Optional research layers preserve source identity and ambiguity rather than silently replacing established meanings.
+
+```sh
+python -m aklo_reference sync
+python -m aklo_reference research "blood"
+python -m aklo_reference reverse "orr'e"
+python -m aklo_reference lookup "remember" --expanded
+python -m aklo_reference translate "blood and soul" --expanded
+python -m aklo_reference research "winter" --include-generated
+python -m aklo_reference sources
+```
+
+- `sync [all|offerings|rc1]` downloads and parses pinned public data into a local cache (default `~/.cache/aklo`, or set `AKLO_CACHE_DIR`).
+- `research` and `reverse` report source-labelled candidates; `--core-only` restricts them to the original dictionary.
+- `--expanded` on lookup and translate makes the RC-1 root index and locally cached Offerings data available. Conflicting forms remain ambiguous. The generated RC-1 report is searchable with `research`, `reverse` and expanded lookup; it is never used automatically by translate.
+- `--include-generated` makes RC-1's automatically coined terms visible for research. Generated candidates are not established vocabulary.
+- No network requests occur unless `sync` is called. Without an external cache, the original dictionary and small RC-1 research index are still available.
+
+### External source catalog
+
+| Source | Contents | Status |
+| --- | --- | --- |
+| [Offerings-to-Cthulhu dictionary](https://github.com/dobbscoin/Offerings-to-Cthulhu/blob/362bea6954092f51f74bf41cdf70996ee387aeff/contrib/site/rlyehian/lexicon.js) | 1,951 forward words, 110 forward phrases; reverse forms and glossary | Local cache, third-party rights unverified |
+| [RC-1 report](https://github.com/ChouYuanjue/Rlyehian-Cthuvian-Translator/blob/0a62c9490c92d035fa09aaadaa156de86cab5cda/data/generated/common-generated-report.json) | 4,065 generated records: 271 semantic compounds and 3,794 coined forms | Local research cache |
+| [RC-1 language specification](https://github.com/ChouYuanjue/Rlyehian-Cthuvian-Translator/blob/0a62c9490c92d035fa09aaadaa156de86cab5cda/docs/LANGUAGE_SPEC.md) | Reconstructed grammar and roots | Small source-labelled research index; grammar not yet implemented |
+
+RC-1 declares MIT in its package metadata; Offerings contains multiple license notices and incorporates a third-party fan glossary and LingoJam data. The full external corpora are not redistributed in this repository. Cache access does not confer redistribution rights. Original source names and links remain intact. Aklo is the project name, not a claim that all historical Mythos languages share a canonical grammar.
